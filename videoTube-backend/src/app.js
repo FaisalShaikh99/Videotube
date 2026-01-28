@@ -13,19 +13,15 @@ import cookieParser from "cookie-parser"  // Cookie parsing middleware
 // Express ka main object create karo
 const app = express(); 
 
-// ========================================
 // CORS CONFIGURATION
-// ========================================
-// Frontend aur backend alag ports pe chalte hain
+// // Frontend aur backend alag ports pe chalte hain
 // CORS allow karta hai ki frontend backend se data access kar sake
 app.use(cors({
     origin: process.env.CORS_ORIGIN, // Sirf specific origin allow karo
     credentials: true                // Cookies share karne ke liye true
 }))
 
-// ========================================
 // SECURITY HEADERS FOR GOOGLE OAUTH
-// ========================================
 // Google OAuth ke liye COOP header set karo
 app.use((req, res, next) => {
     // COOP: Google login ke liye postMessage ko allow karta hai.
@@ -36,9 +32,8 @@ app.use((req, res, next) => {
     next();
 })
 
-// ========================================
+
 // MIDDLEWARES CONFIGURATION
-// ========================================
 
 // ========== JSON PARSING MIDDLEWARE ==========
 // Request body mein JSON data parse karne ke liye

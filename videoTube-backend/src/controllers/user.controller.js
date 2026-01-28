@@ -25,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // 7. Password aur refresh token response se hatao
     // 8. Success response bhejo
 
-   // Debug: uploaded files check karo
+    // Debug: uploaded files check karo
 
     // ========== EXTRACT USER DATA ==========
     const { fullName, email, username, password } = req.body
@@ -50,7 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Avatar file path extract karo
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    
+
 
     // Cover image optional hai, check karo ki hai ya nahi
     let coverImageLocalPath;
@@ -142,7 +142,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
     };
 
@@ -252,13 +252,13 @@ const loginUser = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 15 * 60 * 1000
         })
         .cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         .json(
@@ -325,8 +325,13 @@ const googleLogin = asyncHandler(async (req, res) => {
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
     user.isLoggedIn = true;
+    user.isLoggedIn = true;
     await user.save()
-    const options = { httpOnly: true, secure: true };
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    };
 
     return res.status(200)
         .cookie("accessToken", accessToken, options)
@@ -355,7 +360,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     // ========== COOKIE CLEARING ==========
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     }
 
     const userId = req.user._id;
@@ -398,7 +404,7 @@ const verifyOTP = asyncHandler(async (req, res) => {
     const { otp } = req.body
     const { email } = req.params
 
- 
+
     if (!otp) {
         throw new ApiError(404, "OTP not found")
     }
@@ -504,7 +510,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         const options = {
             httpOnly: true,
             secure: true, // production ke liye
-            sameSite: "lax"
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
         };
 
         //  Send cookies + response

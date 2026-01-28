@@ -1,0 +1,157 @@
+
+
+import mongoose, {Schema} from "mongoose";
+import jwt from "jsonwebtoken"  // JWT tokens generate karne ke liye
+import bcrypt from "bcryptjs"     // Password hashing ke liye
+
+const userSchema = new Schema(
+    {
+        // ========== BASIC USER INFO ==========
+        username: {
+            type: String,
+          //  required: true,        // Compulsory field
+            unique: true,          // Har username unique hona chahiye
+            lowercase: true,       // Always store in lowercase
+            trim: true,            // Remove extra spaces
+            index: true            // Database index for faster queries
+        },
+
+        email: {
+            type: String,
+            required: true,        // Email field mandatory
+            unique: true,          // Har email unique hona chahiye
+            lowercase: true,       // Always store in lowercase
+            trim: true,            // Remove extra spaces
+        },
+
+        fullName: {
+            type: String,
+           // required: true,        // Full name mandatory
+            trim: true,            // Remove extra spaces
+            index: true            // Index for faster search
+        },
+
+        googleId: {             // thridparty authentication
+            type: String,
+            default: null
+        },
+
+        // ========== PROFILE IMAGES ==========
+        avatar: {
+            type: String,          // Cloudinary URL store karenge
+            required: true,        // Profile picture mandatory
+        },
+
+        coverImage: {
+            type: String,          // Cover image URL (optional)
+            default : ""
+        },
+
+        isVerified : {
+            type : Boolean,
+            default:false
+        },
+        
+        isLoggedIn : {
+            type : Boolean,
+            default : false
+        },
+
+        otp : {
+            type : String ,
+            default : null
+        },
+
+        otpExpiry  :{
+            type: Date,
+            default : null
+        },
+        isOtpVerified: {
+            type: Boolean,
+            default: false
+        },
+        watchHistory: [
+            {
+                type: Schema.Types.ObjectId,  // Video ka reference
+                ref: "Video"                  // Video model se connect
+            }
+        ],
+        
+        // ========== SECURITY FIELDS ==========
+        password: {
+            type: String,
+            required: function () {
+            return !this.googleId; 
+        },
+    },
+        refreshToken: {
+            type: String          // JWT refresh token store karte hain
+        }
+
+    },
+    {
+        timestamps: true          // Automatically add createdAt and updatedAt
+    }
+)
+
+// ========================================
+// MIDDLEWARE FUNCTIONS
+// ========================================
+
+// ========== PASSWORD HASHING MIDDLEWARE ==========
+// Ye function automatically chalega jab bhi user save hoga
+userSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) return next();
+
+    if (!this.password) {
+        return next();
+    }
+
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
+
+
+// ========== PASSWORD VERIFICATION METHOD ==========
+// Ye method check karta hai ki entered password correct hai ya nahi
+userSchema.methods.isPasswordCorrect = async function(password){
+    // bcrypt.compare() plain password aur hashed password ko compare karta hai
+    return await bcrypt.compare(password, this.password)
+}
+
+// ========== ACCESS TOKEN GENERATION ==========
+// Short-lived token (15-30 minutes) - API calls ke liye
+userSchema.methods.generateAccessToken = function(){
+    return jwt.sign(
+        {
+            _id: this._id,           // User ID
+            email: this.email,       // User email
+            username: this.username, // Username
+            fullName: this.fullName  // Full name
+        },
+        process.env.ACCESS_TOKEN_SECRET,  // Secret key from environment
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY  // Token expiry time
+        }
+    )
+}
+
+//  REFRESH TOKEN GENERATION 
+// Long-lived token (7-30 days) - Access token refresh karne ke liye
+userSchema.methods.generateRefreshToken = function(){
+    return jwt.sign(
+        {
+            _id: this._id,           // Sirf user ID (minimal data)
+        },
+        process.env.REFRESH_TOKEN_SECRET,  // Different secret for refresh token
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY  // Longer expiry
+        }
+    )
+}
+
+// ========================================
+// EXPORT USER MODEL
+// ========================================
+// "User" naam se model create karo aur export karo
+export const User = mongoose.model("User", userSchema)

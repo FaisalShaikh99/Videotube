@@ -318,6 +318,10 @@ const googleLogin = asyncHandler(async (req, res) => {
             isLoggedIn: true,
             isVerified: true
         });
+    } else if (!user.isVerified) {
+        // If user exists but is not verified, verify them now since Google auth confirms email
+        user.isVerified = true;
+        await user.save({ validateBeforeSave: false });
     }
 
     // STEP 4: Generate Tokens

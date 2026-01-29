@@ -28,11 +28,17 @@ export const verifyMail = async (token, email) => {
 
     // ===== Mail Transporter =====
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // use SSL
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
+      // Timeout settings
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
 
     const mailConfiguration = {
@@ -42,6 +48,7 @@ export const verifyMail = async (token, email) => {
       html: htmlToSend,
     };
 
+    await transporter.verify(); // Verify connection config
     await transporter.sendMail(mailConfiguration);
   } catch (error) {
     console.error(error);

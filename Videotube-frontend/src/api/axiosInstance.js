@@ -57,10 +57,8 @@ apiClient.interceptors.response.use(
     }
 
     // If user is GUEST → do nothing
-    const hasRefreshCookie = document.cookie.includes("refreshToken");
-    if (!hasRefreshCookie) {
-      return Promise.reject(error);
-    }
+    // NOTE: We cannot check for HttpOnly cookies via document.cookie.
+    // So we just attempt the refresh. If it fails, the catch block handles logout.
 
     // ✅ TRY refresh
     originalRequest._retry = true;

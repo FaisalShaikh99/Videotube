@@ -129,8 +129,8 @@ function UploadVideo() {
 
     return (
         <Container maxWidth="4xl">
-            <div className="p-6 bg-white  rounded-lg shadow-md my-8">
-                <h1 className="text-3xl text-center font-bold mb-6 border-b pb-4 text-gradient">Upload a New Video</h1>
+            <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md my-8 transition-colors duration-300">
+                <h1 className="text-3xl text-center font-bold mb-6 border-b border-gray-200 dark:border-gray-700 pb-4 text-gradient">Upload a New Video</h1>
                 
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 
@@ -147,37 +147,37 @@ function UploadVideo() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter a catchy title"
             required
-            className="w-full !bg-white !border-gray-300 !text-gray-900 shadow-sm rounded-lg focus:ring-indigo-600"
+            className="w-full !bg-white dark:!bg-slate-900 !border-gray-300 dark:!border-gray-700 !text-gray-900 dark:!text-white shadow-sm rounded-lg focus:ring-indigo-600"
           />
           {/* Description */}
           <div className="flex-grow flex flex-col">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="flex-wrap w-full border border-gray-300 rounded-lg shadow-sm p-4 focus:ring-2 focus:ring-indigo-600 focus:border-transparent outline-none min-h-[200px]"
+              className="flex-wrap w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-900 text-gray-900 dark:text-white rounded-lg shadow-sm p-4 focus:ring-2 focus:ring-indigo-600 focus:border-transparent outline-none min-h-[200px] placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Tell viewers about your video"
             ></textarea>          
           </div>
 
           {/* Playlist */}
           <div className="flex-grow flex flex-col relative">
-              <label className='block text-sm font-medium text-gray-700 mb-1'>Playlists</label>
-              <h5 className='text-sm text-gray-500 mb-2'>Add your video to one or more playlists.</h5>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>Playlists</label>
+              <h5 className='text-sm text-gray-500 dark:text-gray-400 mb-2'>Add your video to one or more playlists.</h5>
             
               <button 
                 type="button"
                 onClick={() => setIsPlaylistDropdownOpen(!isPlaylistDropdownOpen)}
-                className="w-full flex justify-between items-center border border-gray-300 rounded-lg p-3 bg-white text-left focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+                className="w-full flex justify-between items-center border border-gray-300 dark:border-gray-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-left focus:ring-2 focus:ring-indigo-600 focus:outline-none transition-colors"
               >
-                  <span className={selectedPlaylists.length === 0 ? "text-gray-500" : "text-gray-800"}>
+                  <span className={selectedPlaylists.length === 0 ? "text-gray-500 dark:text-gray-400" : "text-gray-800 dark:text-white"}>
                       {selectedPlaylists.length === 0 
                         ? "Select Playlists" 
                         : `${selectedPlaylists.length} playlist${selectedPlaylists.length > 1 ? 's' : ''} selected`}
                   </span>
-                  <ChevronDown size={20} className={`text-gray-500 transition-transform ${isPlaylistDropdownOpen ? 'rotate-180' : ''}`}/>
+                  <ChevronDown size={20} className={`text-gray-500 dark:text-gray-400 transition-transform ${isPlaylistDropdownOpen ? 'rotate-180' : ''}`}/>
               </button>
 
               {isPlaylistDropdownOpen && (

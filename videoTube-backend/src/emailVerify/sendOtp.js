@@ -1,21 +1,27 @@
 import nodemailer from 'nodemailer'
 import "dotenv/config"
 
-export const sendOtpMail = async(email, otp) =>  {
-       const transporter = nodemailer.createTransport({
-        service : 'gmail',
-        auth : {
-            user : process.env.MAIL_USER,
-            pass : process.env.MAIL_PASS
-        }
-       })
+export const sendOtpMail = async (email, otp) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // use SSL
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000
+    })
 
-       const mailOptions = {
-        from : process.env.MAIL_USER,
-        to : email,
-        subject : "Password resent OTP",
-        html : `<p>Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.</p>`
-       }
+    const mailOptions = {
+        from: `"VideoTube" <${process.env.MAIL_USER}>`, // Improved from field
+        to: email,
+        subject: "Password resent OTP",
+        html: `<p>Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.</p>`
+    }
 
-        await transporter.sendMail(mailOptions)
+    await transporter.verify();
+    await transporter.sendMail(mailOptions)
 }

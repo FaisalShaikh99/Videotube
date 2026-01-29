@@ -13,8 +13,8 @@ function Logo({
             text: 'text-lg',
         },
         md: {
-            icon: 'w-8 h-8',
-            text: 'text-xl',
+            icon: 'w-6 h-6 md:w-8 md:h-8',
+            text: 'text-lg md:text-xl',
         },
         lg: {
             icon: 'w-10 h-10',

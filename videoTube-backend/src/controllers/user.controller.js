@@ -808,6 +808,41 @@ const removeFromHistory = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Removed from watch history"));
 });
 
+// ========== RESEND VERIFICATION EMAIL ==========
+const resendVerificationEmail = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (user.isVerified) {
+        throw new ApiError(400, "Email is already verified");
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.EMAIL_VERIFY_SECRET, { expiresIn: "10m" })
+
+    // Using try-catch for email sending to ensure we can handle failures gracefully
+    try {
+        await verifyMail(token, email);
+    } catch (error) {
+        throw new ApiError(500, "Failed to send verification email. Please try again later.");
+    }
+
+    user.token = token;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(200).json(
+        new ApiResponse(200, null, "Verification email resent successfully")
+    );
+});
+
 // ========================================
 // EXPORT ALL CONTROLLER FUNCTIONS
 // ========================================
@@ -828,5 +863,6 @@ export {
     updateUserCoverImage,
     getUserChannleProfile,
     getWatchHistory,
-    removeFromHistory
+    removeFromHistory,
+    resendVerificationEmail
 }

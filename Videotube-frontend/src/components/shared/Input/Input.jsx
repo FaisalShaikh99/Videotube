@@ -21,7 +21,7 @@ const Input = forwardRef(function Input({
         border border-gray-200 dark:border-slate-700 
         rounded-xl 
         text-gray-900 dark:text-white 
-        placeholder-gray-400 dark:placeholder-gray-500
+        placeholder-gray-500 dark:placeholder-gray-400
         transition-all duration-200
         focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 dark:focus:border-indigo-400
         disabled:bg-gray-100 dark:disabled:bg-slate-900 disabled:text-gray-400 disabled:cursor-not-allowed

@@ -10,12 +10,14 @@ import {
 import { FaHistory } from "react-icons/fa";
 import { BiSolidLike } from "react-icons/bi";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-import { RiPlayList2Line } from "react-icons/ri";
-import { X } from "lucide-react";
+import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
+import { useTheme } from "../../../context/ThemeContext";
+import { Sun, Moon, X } from "lucide-react"; 
 
 function MobileMenu({ open, onClose, onLogout }) {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme(); // Use Theme
   const subscriberId = user?._id;
 
   if (!open) return null;
@@ -28,11 +30,20 @@ function MobileMenu({ open, onClose, onLogout }) {
         onClick={onClose}
       />
 
-      {/* Drawer */}
-      <aside className="fixed top-0 left-0 h-full w-[280px] bg-white dark:bg-slate-900 z-[70] shadow-2xl overflow-y-auto">
+      {/* Drawer - Reduced Width */}
+      <aside className="fixed top-0 left-0 h-full w-[240px] bg-white dark:bg-slate-900 z-[70] shadow-2xl overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100 dark:border-gray-800">
-          <span className="font-bold text-xl text-gradient">Menu</span>
+          <div className="flex items-center gap-3">
+             <span className="font-bold text-xl text-gradient">Menu</span>
+             {/* Theme Toggle Inside Menu */}
+             <button 
+                onClick={toggleTheme}
+                className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800"
+             >
+                {theme === 'dark' ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-indigo-600" />}
+             </button>
+          </div>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-500 dark:text-gray-400"
@@ -63,6 +74,7 @@ function MobileMenu({ open, onClose, onLogout }) {
           <MenuItem to="/" icon={<ImHome />} label="Home" onClick={onClose} isActive={location.pathname === "/"} />
           {isAuthenticated && (
             <>
+              <MenuItem to="/upload" icon={<RiVideoUploadFill />} label="Upload Video" onClick={onClose} isActive={location.pathname === "/upload"} />
               <MenuItem to={`/subscriptions/${user?._id}`} icon={<MdSubscriptions />} label="Subscriptions" onClick={onClose} isActive={location.pathname.includes("/subscriptions")} />
               <MenuItem to="/history" icon={<FaHistory />} label="History" onClick={onClose} isActive={location.pathname === "/history"} />
               <MenuItem to="/videos" icon={<BiSolidLike />} label="Liked Videos" onClick={onClose} isActive={location.pathname === "/videos"} />

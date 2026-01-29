@@ -16,7 +16,8 @@ import {
     forgotPassword,
     verifyOTP,
     refreshAccessToken,
-    removeFromHistory
+    removeFromHistory,
+    resendVerificationEmail
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
@@ -37,6 +38,7 @@ router.route("/register").post(
     ]),
     registerUser)
 router.route("/verify-email/:token").get(verifyEmail)
+router.route("/resend-verification-email").post(resendVerificationEmail)
 router.route("/login").post(loginUser)
 router.route("/googleLogin").post(googleLogin)
 router.route("/forgot-password").post(forgotPassword)

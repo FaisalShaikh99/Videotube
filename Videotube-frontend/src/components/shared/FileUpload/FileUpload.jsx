@@ -94,7 +94,7 @@ function FileUpload({
         <div className={`space-y-2 ${className}`}>
             {/* ============= LABEL ============= */}
             {label && (
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     {label}
                     {required && <span className="text-red-500 ml-1">*</span>}
                 </label>
@@ -115,12 +115,12 @@ function FileUpload({
             <div
                 className={`relative border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
                     dragActive 
-                        ? 'border-indigo-500 bg-indigo-50' 
+                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/10 dark:border-indigo-400' 
                         : selectedFile 
-                            ? 'border-green-500 bg-green-50' 
+                            ? 'border-green-500 bg-green-50 dark:bg-green-900/10 dark:border-green-500' 
                             : error 
-                                ? 'border-red-300 bg-red-50' 
-                                : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                                ? 'border-red-300 bg-red-50 dark:bg-red-900/10 dark:border-red-500' 
+                                : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-900 hover:border-gray-400 dark:hover:border-gray-500'
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -143,7 +143,7 @@ function FileUpload({
                 {!previewUrl && (
                     <div className="mb-4">
                         <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
+                            className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
                             stroke="currentColor"
                             fill="none"
                             viewBox="0 0 48 48"
@@ -159,23 +159,23 @@ function FileUpload({
                 )}
 
                 {/* ============= UPLOAD TEXT ============= */}
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 dark:text-gray-300">
                     {selectedFile ? (
                         <div>
-                            <p className="font-medium text-green-600">{selectedFile.name}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="font-medium text-green-600 dark:text-green-400">{selectedFile.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                             </p>
                         </div>
                     ) : (
                         <div>
                             <p className="font-medium">
-                                <span className="text-indigo-600 hover:text-indigo-500">
+                                <span className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
                                     Click to upload
                                 </span>{' '}
                                 or drag and drop
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-500">
                                 {accept.includes('image') ? 'PNG, JPG, GIF up to' : 'Files up to'} {maxSize}MB
                             </p>
                         </div>
@@ -190,7 +190,7 @@ function FileUpload({
                             e.stopPropagation();
                             handleRemove();
                         }}
-                        className="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full transition-colors"
+                        className="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -201,12 +201,12 @@ function FileUpload({
 
             {/* ============= ERROR MESSAGE ============= */}
             {error && (
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             )}
 
             {/* ============= HELPER TEXT ============= */}
             {helperText && !error && (
-                <p className="text-sm text-gray-500">{helperText}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{helperText}</p>
             )}
         </div>
     );

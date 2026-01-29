@@ -289,8 +289,8 @@ function UploadVideo() {
         </Button>
       </div>
     </form>
-            </div>
-        </Container>
+   </div>
+  </Container>
     );
 }
 

@@ -117,7 +117,7 @@ function Header() {
     }
   };
 
-  return (
+    return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-[1920px] mx-auto px-4 h-full flex items-center justify-between">
@@ -136,7 +136,61 @@ function Header() {
             </div>
           </div>
 
-          {/* ... (Search hidden on mobile) ... */}
+          {/* MIDDLE SECTION: SEARCH (Restored) */}
+          {isAuthenticated && (
+            <div className="hidden md:flex flex-1 justify-center px-6 max-w-2xl mx-auto">
+               <form onSubmit={handleSearch} className="relative w-full group">
+                  <div className="relative flex items-center">
+                      <FiSearch className="absolute left-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors z-10" size={20} />
+                      
+                      <input
+                        ref={searchInputRef}
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        onFocus={() => suggestions.length && setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                        placeholder="Search videos..."
+                        className="w-full pl-12 pr-12 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white border border-transparent rounded-full focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 outline-none placeholder-gray-500"
+                      />
+
+                      {searchText && (
+                        <button
+                            type="button"
+                            onClick={handleClearSearch}
+                            className="absolute right-3 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+                        >
+                            <X size={16} />
+                        </button>
+                      )}
+                  </div>
+
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl shadow-xl dark:shadow-black/50 overflow-hidden py-2 animate-in fade-in slide-in-from-top-2">
+                      {suggestions.map((s, i) => (
+                        <div
+                          key={i}
+                          onMouseDown={(e) => {
+                              e.preventDefault(); 
+                              setSearchText(s);
+                              if (window.location.pathname !== '/') {
+                                  navigate(`/?query=${encodeURIComponent(s)}`);
+                              } else {
+                                  setSearchParams({ query: s, page: 1 });
+                              }
+                              setShowSuggestions(false);
+                          }}
+                          className="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer flex items-center gap-3 transition-colors group/item"
+                        >
+                          <FiSearch className="text-gray-400 group-hover/item:text-indigo-500" size={16} />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover/item:text-indigo-600 dark:group-hover/item:text-indigo-400">{s}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+               </form>
+            </div>
+          )}
 
           {/* RIGHT SECTION: ACTIONS */}
           <div className="flex items-center gap-2 sm:gap-4">
@@ -144,9 +198,43 @@ function Header() {
              <button 
                 onClick={toggleTheme}
                 className="hidden md:block p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                title="Toggle Theme"
              >
                 {theme === 'dark' ? <Sun size={22} className="text-yellow-400 fill-yellow-400/20" /> : <Moon size={22} className="text-indigo-600 fill-indigo-600/20" />}
              </button>
+
+             {/* Desktop Actions (Restored) */}
+             <div className="hidden md:flex items-center gap-4">
+                {isAuthenticated ? (
+                  <>
+                    <Link to="/upload">
+                      <Button variant="primary" size="sm" className="rounded-full shadow-lg shadow-indigo-500/25">
+                         <FaPlus className="mr-2" /> Create
+                      </Button>
+                    </Link>
+
+                    <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+
+                    <Link to="/profile" className="flex items-center gap-3 group">
+                      <div className="relative">
+                         <Avatar size="sm" src={user?.avatar} className="ring-2 ring-transparent group-hover:ring-indigo-500 transition-all" />
+                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+                      </div>
+                    </Link>
+                    
+                    <button
+                      onClick={handleLogoutClick}
+                      className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/login">
+                     <Button variant="primary" size="sm" className="rounded-full px-6">Login</Button>
+                  </Link>
+                )}
+             </div>
 
              {/* Mobile Actions: Search First, then Gradient Plus */}
              <div className="flex md:hidden items-center gap-2">

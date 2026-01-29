@@ -26,14 +26,20 @@ export const verifyMail = async (token, email) => {
       verifyUrl,
     });
 
-    // ===== Mail Transporter (Service: Gmail) =====
+    // ===== Mail Transporter (Explicit Config + IPv4 Force) =====
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // Use built-in Gmail service (Handles Port/Secure automatically)
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
-      // Debug settings
+      tls: {
+        rejectUnauthorized: false
+      },
+      // FORCE IPv4 (Fixes Render/Gmail Timeout)
+      family: 4,
       logger: true,
       debug: true,
     });

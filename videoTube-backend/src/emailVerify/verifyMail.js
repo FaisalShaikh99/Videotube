@@ -26,19 +26,16 @@ export const verifyMail = async (token, email) => {
       verifyUrl,
     });
 
-    // ===== Mail Transporter =====
+    // ===== Mail Transporter (Service: Gmail) =====
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587, // Changed from 465 -> 587 (TLS is more reliable on cloud servers)
-      secure: false, // Use STARTTLS
+      service: 'gmail', // Use built-in Gmail service (Handles Port/Secure automatically)
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
-      // Timeout settings (increased for safety)
-      connectionTimeout: 20000,
-      greetingTimeout: 20000,
-      socketTimeout: 20000,
+      // Debug settings
+      logger: true,
+      debug: true,
     });
 
     const mailConfiguration = {

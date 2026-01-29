@@ -98,7 +98,7 @@ function Subscriptions() {
               Videos from your favorite channels will appear here.
             </p>
             <Link
-              to="/explore" // Change this to your explore/home page route
+              to="/" 
               className="mt-6 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700"
             >
               Explore Channels

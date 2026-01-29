@@ -43,7 +43,7 @@ const Input = forwardRef(function Input({
         <div className="space-y-1.5">
             {/* ============= LABEL ============= */}
             {label && (
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">
+                <label className="block text-sm font-semibold text-gray-900 dark:text-white ml-1">
                     {label}
                     {required && <span className="text-pink-500 ml-1">*</span>}
                 </label>

@@ -111,15 +111,15 @@ function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 py-12 transition-colors duration-300">
       <Container maxWidth="sm">
         <div className="space-y-8">
           <div className="text-center">
             <Logo size="lg" className="mx-auto mb-4" />
-            <h2 className="text-3xl font-extrabold text-gray-900">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">
               Create your account
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Or{" "}
               <Link to="/login" className="text-indigo-600 font-medium">
                 sign in
@@ -128,21 +128,33 @@ function SignUp() {
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <Input label="Full Name" name="fullName" onChange={handleInputChange} required />
-            <Input label="Username" name="username" onChange={handleInputChange} required />
-            <Input label="Email" name="email" type="email" onChange={handleInputChange} required />
-            <Input 
-              label="Password" 
-              name="password" 
-              type={showPassword ? 'text' : 'password'} 
-              onChange={handleInputChange}
-              icon={showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-              iconPosition="right"
-              onIconClick={() => setShowPassword(!showPassword)}
-              required 
-            />
-            <FileUpload label="Profile Picture" required onFileChange={setAvatar} />
-            <FileUpload label="Cover Image" onFileChange={setCoverImage} />
+            
+            {/* Desktop: 2 Column Grid for Text Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input label="Full Name" name="fullName" onChange={handleInputChange} required />
+                <Input label="Username" name="username" onChange={handleInputChange} required />
+                <Input label="Email" name="email" type="email" onChange={handleInputChange} required />
+                <Input 
+                  label="Password" 
+                  name="password" 
+                  type={showPassword ? 'text' : 'password'} 
+                  onChange={handleInputChange}
+                  icon={showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  iconPosition="right"
+                  onIconClick={() => setShowPassword(!showPassword)}
+                  required 
+                />
+            </div>
+
+            {/* Desktop: 2 Column Grid for Uploads */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="md:col-span-1">
+                    <FileUpload label="Profile Picture" required onFileChange={setAvatar} className="h-full" />
+                </div>
+                <div className="md:col-span-1">
+                    <FileUpload label="Cover Image" onFileChange={setCoverImage} className="h-full" />
+                </div>
+            </div>
 
             <Button type="submit" loading={isSubmitting} className="w-full">
               {isSubmitting ? "Creating account..." : "Create account"}

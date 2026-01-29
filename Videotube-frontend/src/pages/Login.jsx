@@ -93,13 +93,13 @@ function Login() {
   
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 py-12 transition-colors duration-300">
             <Container maxWidth="sm">
                 <div className="space-y-8">
                     <div className="text-center">
                         <Logo size="lg" className="mx-auto mb-4" />
-                        <h2 className="text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
-                        <p className="mt-2 text-sm text-gray-600">
+                        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white">Sign in to your account</h2>
+                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                             Or{' '}
                             <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
                                 create a new account
@@ -123,6 +123,7 @@ function Login() {
                             value={formData.email}
                             onChange={handleInputChange}
                             required
+                            
                         />
                         <Input
                             label="Password"

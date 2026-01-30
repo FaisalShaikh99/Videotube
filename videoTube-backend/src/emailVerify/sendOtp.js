@@ -19,6 +19,21 @@ export const sendOtpMail = async (email, otp) => {
         html: `<p>Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.</p>`
     }
 
-    await transporter.verify();
-    await transporter.sendMail(mailOptions)
+    try {
+        console.log("Configuring Nodemailer with:", {
+            host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+            port: process.env.SMTP_PORT || 587,
+            user: process.env.SMTP_USER ? "Set" : "Missing",
+            pass: process.env.SMTP_PASS ? "Set" : "Missing"
+        });
+
+        await transporter.verify();
+        console.log("SMTP Connection Viable");
+
+        await transporter.sendMail(mailOptions);
+        console.log(`OTP Email sent to ${email}`);
+    } catch (error) {
+        console.error("Email Verification Failed:", error);
+        throw error; // Let controller handle it
+    }
 }

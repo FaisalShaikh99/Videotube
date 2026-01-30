@@ -285,8 +285,8 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data || action.payload;
-        state.isAuthenticated = true;
+        state.user = action.payload?.data || action.payload; // handles both API response and direct null
+        state.isAuthenticated = !!state.user;
       })
       .addCase(getCurrentUser.rejected, (state) => {
         state.loading = false;
@@ -300,10 +300,10 @@ const authSlice = createSlice({
 
       })
       .addCase(refreshAccessToken.rejected, (state) => {
-
         state.isAuthenticated = false;
         state.user = null;
-        state.status = "failed";
+        state.status = "idle"; // Set to idle instead of failed to avoid UI error states
+        state.error = null;    // Clear any errors
       })
 
       /* FORGOT PASSWORD */

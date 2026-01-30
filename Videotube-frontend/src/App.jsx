@@ -46,7 +46,7 @@ function App() {
       .catch(() => {
         // Refresh token invalid  - directly getCurrentUser try 
         // Agar access token valid ho
-        dispatch(getCurrentUser({}));
+        dispatch(getCurrentUser({ silent: true }));
       });
   }, [dispatch]);
 

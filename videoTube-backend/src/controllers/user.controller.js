@@ -141,9 +141,9 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
     const cookieOptions = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        secure: true, // Always secure for Render
+        sameSite: "none", // Always none for Cross-Site
+        partitioned: true // For Chrome/Mobile privacy sandbox
     };
 
     return res
@@ -246,21 +246,19 @@ const loginUser = asyncHandler(async (req, res) => {
     await user.save()
 
 
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        partitioned: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    };
+
     // ========== SUCCESS RESPONSE ==========
     return res
         .status(200)
-        .cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 15 * 60 * 1000
-        })
-        .cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        .cookie("accessToken", accessToken, { ...options, maxAge: 15 * 60 * 1000 })
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200,
@@ -333,8 +331,9 @@ const googleLogin = asyncHandler(async (req, res) => {
     await user.save()
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+        secure: true,
+        sameSite: "none",
+        partitioned: true
     };
 
     return res.status(200)
@@ -364,8 +363,9 @@ const logoutUser = asyncHandler(async (req, res) => {
     // ========== COOKIE CLEARING ==========
     const options = {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+        secure: true,
+        sameSite: "none",
+        partitioned: true
     }
 
     const userId = req.user._id;
@@ -513,8 +513,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
         const options = {
             httpOnly: true,
-            secure: true, // production ke liye
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+            secure: true,
+            sameSite: "none",
+            partitioned: true
         };
 
         //  Send cookies + response

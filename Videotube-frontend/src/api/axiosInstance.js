@@ -37,6 +37,11 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Ignore current-user (Let App.jsx handle guest state)
+    if (originalRequest.url.includes("/users/current-user")) {
+      return Promise.reject(error); // Don't redirect, just fail
+    }
+
     // 401 but request already retried
     if (originalRequest._retry) {
       return Promise.reject(error);

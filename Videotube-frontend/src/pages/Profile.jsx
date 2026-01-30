@@ -62,11 +62,23 @@ const ProfilePage = () => {
 
 
   // Handle avatar file selection (backend ke liye)
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setAvatarPreview(URL.createObjectURL(file));
-      setAvatarFile(file);
+      
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      try {
+        setIsSaving(true);
+        await dispatch(updateUserAvatar(formData)).unwrap();
+        toast.success("Avatar updated successfully");
+      } catch (error) {
+        toast.error(error?.message || "Failed to update avatar");
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -90,11 +102,7 @@ const ProfilePage = () => {
       setIsSaving(true);
       const updatePromises = [];
 
-      if (avatarFile) {
-        const avatarFormData = new FormData();
-        avatarFormData.append("avatar", avatarFile);
-        updatePromises.push(dispatch(updateUserAvatar(avatarFormData)).unwrap());
-      }
+      // Avatar upload is now handled immediately in handleAvatarChange
       
       if (
         user.fullName !== fullName ||

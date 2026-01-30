@@ -26,25 +26,19 @@ export const verifyMail = async (token, email) => {
       verifyUrl,
     });
 
-    // ===== Mail Transporter (Port 465 SSL + IPv4) =====
+    // ===== Mail Transporter (Generic SMTP / Brevo) =====
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false, // true for 465, false for 587
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false
-      },
-      family: 4, // Force IPv4
-      logger: true,
-      debug: true,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      }
     });
 
     const mailConfiguration = {
-      from: `"VideoTube" <${process.env.MAIL_USER}>`,
+      from: `"VideoTube" <${process.env.SMTP_USER}>`,
       to: email,
       subject: "Verify your VideoTube email",
       html: htmlToSend,

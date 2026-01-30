@@ -3,23 +3,17 @@ import "dotenv/config"
 
 export const sendOtpMail = async (email, otp) => {
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: false, // true for 465, false for other ports
         auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS
-        },
-        tls: {
-            rejectUnauthorized: false
-        },
-        family: 4, // Force IPv4
-        logger: true,
-        debug: true
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        }
     })
 
     const mailOptions = {
-        from: `"VideoTube" <${process.env.MAIL_USER}>`, // Improved from field
+        from: `"VideoTube" <${process.env.SMTP_USER}>`, // Improved from field
         to: email,
         subject: "Password resent OTP",
         html: `<p>Your OTP for password reset is: <b>${otp}</b>. It is valid for 10 minutes.</p>`

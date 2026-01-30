@@ -217,7 +217,7 @@ const initialState = {
   user: null,
   error: null,
 
-  loading: false,
+  loading: true,
 
   otpSent: false,
   otpVerified: false,

@@ -36,6 +36,10 @@ function App() {
 
   // App open / refresh par token check 
   useEffect(() => {
+    const path = window.location.pathname;
+    // Skip auth check for login/signup pages to avoid 401 errors
+    if (path === "/login" || path === "/signup") return;
+
     // Pehle refresh token se naya access token try 
     dispatch(refreshAccessToken())
       .unwrap()

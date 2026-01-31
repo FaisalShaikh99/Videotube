@@ -240,6 +240,9 @@ const authSlice = createSlice({
       state.otpVerified = false;
       state.passwordChanged = false;
     },
+    setLoading(state, action) {
+      state.loading = action.payload;
+    },
 
   },
   extraReducers: (builder) => {
@@ -357,5 +360,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, resetForgotPasswordFlow } = authSlice.actions;
+export const { clearError, resetForgotPasswordFlow, setLoading } = authSlice.actions;
 export default authSlice.reducer;

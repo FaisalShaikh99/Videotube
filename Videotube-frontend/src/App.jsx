@@ -27,7 +27,7 @@ import VerifyingEmail from './pages/VerifyingEmail.jsx';
 import Playlist  from './pages/Playlists.jsx';
 // import PlaylistDetail from './pages/PlaylistDetails.jsx'
 import VerifyEmailInfo from './pages/VerifyEmailInfo.jsx';
-import { getCurrentUser, refreshAccessToken } from './features/auth/authSlice.js';
+import { getCurrentUser, refreshAccessToken, setLoading } from './features/auth/authSlice.js';
 
 function App() {
 
@@ -38,7 +38,10 @@ function App() {
   useEffect(() => {
     const path = window.location.pathname;
     // Skip auth check for login/signup pages to avoid 401 errors
-    if (path === "/login" || path === "/signup") return;
+    if (path === "/login" || path === "/signup") {
+      dispatch(setLoading(false));
+      return;
+    }
 
     // Pehle refresh token se naya access token try 
     dispatch(refreshAccessToken())

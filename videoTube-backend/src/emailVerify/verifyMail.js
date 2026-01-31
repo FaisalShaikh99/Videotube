@@ -34,11 +34,14 @@ export const verifyMail = async (token, email) => {
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
-      }
+      },
+      connectionTimeout: 8000,
+  greetingTimeout: 8000,
+  socketTimeout: 8000,
     });
 
     const mailConfiguration = {
-      from: `"VideoTube" <${process.env.SMTP_USER}>`,
+      from: `"VideoTube" <${process.env.SMTP_FROM}>`,
       to: email,
       subject: "Verify your VideoTube email",
       html: htmlToSend,

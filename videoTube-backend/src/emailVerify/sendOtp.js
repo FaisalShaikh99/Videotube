@@ -27,9 +27,6 @@ export const sendOtpMail = async (email, otp) => {
             pass: process.env.SMTP_PASS ? "Set" : "Missing"
         });
 
-        await transporter.verify();
-        console.log("SMTP Connection Viable");
-
         await transporter.sendMail(mailOptions);
         console.log(`OTP Email sent to ${email}`);
     } catch (error) {

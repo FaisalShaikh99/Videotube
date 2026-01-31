@@ -10,9 +10,22 @@ const uploadOnCloudinary = async (localFilePath, resourceType = "auto") => {
   try {
     if (!localFilePath) return null;
 
-    const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: resourceType,
-    });
+    console.log(`📡 Uploading to Cloudinary (${resourceType})...`);
+
+    let response;
+    if (resourceType === 'video') {
+      // Use upload_large for better handling of video files
+      response = await cloudinary.uploader.upload_large(localFilePath, {
+        resource_type: "video",
+        chunk_size: 6000000, // 6MB chunks
+      });
+    } else {
+      response = await cloudinary.uploader.upload(localFilePath, {
+        resource_type: resourceType,
+      });
+    }
+
+    console.log(`✅ Upload successful: ${response.url}`);
 
     // ✅ SAFE async cleanup
     await fs.unlink(localFilePath).catch(() => { });

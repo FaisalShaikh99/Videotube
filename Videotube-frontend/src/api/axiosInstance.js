@@ -65,6 +65,11 @@ apiClient.interceptors.response.use(
     // NOTE: We cannot check for HttpOnly cookies via document.cookie.
     // So we just attempt the refresh. If it fails, the catch block handles logout.
 
+    // ✅ ONLY Retry if error is 401 (Unauthorized)
+    if (error.response?.status !== 401) {
+      return Promise.reject(error);
+    }
+
     // ✅ TRY refresh
     originalRequest._retry = true;
 

@@ -9,7 +9,9 @@ import jwt from "jsonwebtoken";                         // JWT token operations
 import mongoose from "mongoose";
 import fs from "fs";
 import { OAuth2Client } from "google-auth-library";
-import { sendVerificationEmail, sendOtpEmail } from "../emailVerify/verifyMail.js";
+import { verifyMail } from "../emailVerify/verifyMail.js";
+import { Session } from "../models/session.Model.js";
+import { sendOtpMail } from "../emailVerify/sendOtp.js";
 
 // ========== USER REGISTRATION ==========
 const registerUser = asyncHandler(async (req, res) => {
@@ -90,7 +92,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.EMAIL_VERIFY_SECRET, { expiresIn: "10m" })
-    sendVerificationEmail(token, email)
+    verifyMail(token, email)
     user.token = token
     await user.save()
     // ========== SUCCESS RESPONSE ==========
@@ -225,7 +227,13 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     // check for existing session and delete it
-    // user.isLoggedIn = true; (removed session logic to avoid errors if model missing)
+    const existingSession = await Session.findOne({ userId: user._id });
+    if (existingSession) {
+        await Session.deleteOne({ userId: user._id })
+    }
+
+    //create a new session
+    await Session.create({ userId: user._id })
 
     // ========== TOKEN GENERATION ==========
     // Access aur refresh token generate karo
@@ -361,7 +369,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
 
     const userId = req.user._id;
-    // await Session.deleteMany({ userId }); (removed session logic)
+    await Session.deleteMany({ userId });
     await User.findByIdAndUpdate(userId, { isLoggedIn: false })
 
     return res
@@ -386,7 +394,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
         user.otpExpiry = expiry
 
     await user.save()
-    await sendOtpEmail(email, otp);
+    await sendOtpMail(email, otp);
     return res
         .json(
             new ApiResponse(
@@ -827,7 +835,7 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
 
     // Using try-catch for email sending to ensure we can handle failures gracefully
     try {
-        await sendVerificationEmail(token, email);
+        await verifyMail(token, email);
     } catch (error) {
         throw new ApiError(500, "Failed to send verification email. Please try again later.");
     }

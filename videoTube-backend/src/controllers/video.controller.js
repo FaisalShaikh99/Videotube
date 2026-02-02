@@ -149,6 +149,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
 
   const videoLocalPath = req.files?.videoFile?.[0]?.path;
+
   const thumbnailLocalPath = req.files?.thumbnail?.[0]?.path;
 
   if (!videoLocalPath || !thumbnailLocalPath) {
@@ -159,21 +160,24 @@ const publishAVideo = asyncHandler(async (req, res) => {
   console.log("🚀 Publishing Video: Starting Uploads...");
 
   const video = await uploadOnCloudinary(videoLocalPath, "video");
-  if (video) console.log("✅ Video File Uploaded");
-  else console.error("❌ Video File Upload Failed");
-
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath, "image");
-  if (thumbnail) console.log("✅ Thumbnail Uploaded");
-  else console.error("❌ Thumbnail Upload Failed");
 
   if (!video || !thumbnail) {
     throw new ApiError(400, "Video and thumbnail upload failed");
   }
 
+  // Safe URL extraction with fallback
+  const videoUrl = video.secure_url || video.url;
+  const thumbnailUrl = thumbnail.secure_url || thumbnail.url;
+
+  if (!videoUrl || !thumbnailUrl) {
+    throw new ApiError(500, "Cloudinary upload succeeded but returned no info URL");
+  }
+
   // save in DB
   const newVideo = await Video.create({
-    videoFile: video.secure_url,
-    thumbnail: thumbnail.secure_url,
+    videoFile: videoUrl,
+    thumbnail: thumbnailUrl,
     title,
     description,
     duration,

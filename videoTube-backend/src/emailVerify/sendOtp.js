@@ -1,21 +1,14 @@
-import nodemailer from 'nodemailer'
+import sgMail from '@sendgrid/mail'
 import "dotenv/config"
 import { ApiError } from "../utils/ApiError.js";
 
+// Initialize SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 export const sendOtpMail = async (email, otp) => {
     try {
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: Number(process.env.SMTP_PORT) || 587,
-            secure: false, // true for 465, false for 587
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
-            }
-        })
-
         const mailOptions = {
-            from: `"VideoTube" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+            from: `VideoTube <${process.env.SMTP_FROM}>`, // Properly formatted sender
             to: email,
             subject: "Password Reset OTP - VideoTube",
             html: `
@@ -32,14 +25,26 @@ export const sendOtpMail = async (email, otp) => {
         }
 
         console.log(`ATTEMPTING TO SEND OTP to ${email}...`);
-        await transporter.verify();
-        const info = await transporter.sendMail(mailOptions);
+
+        const info = await sgMail.send(mailOptions);
+
         console.log(`✅ OTP Email successfully sent to ${email}`);
-        console.log(`   MessageID: ${info.messageId}`);
-        console.log(`   Response: ${info.response}`);
+        console.log(`   Response Status: ${info[0].statusCode}`);
 
     } catch (error) {
         console.error("❌ Email Verification Failed:", error);
-        throw new ApiError(500, "Failed to send OTP email: " + error.message);
+
+        let errorMessage = "Failed to send OTP email";
+
+        if (error.response && error.response.body && error.response.body.errors) {
+            // Extract SendGrid specific error message
+            const sendGridErrors = error.response.body.errors.map(e => e.message).join(", ");
+            errorMessage += `: ${sendGridErrors}`;
+            console.error("SendGrid Errors:", sendGridErrors);
+        } else if (error.message) {
+            errorMessage += `: ${error.message}`;
+        }
+
+        throw new ApiError(500, errorMessage);
     }
 }

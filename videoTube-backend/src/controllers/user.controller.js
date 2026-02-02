@@ -382,6 +382,10 @@ const logoutUser = asyncHandler(async (req, res) => {
 const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
 
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
     const user = await User.findOne({ email })
     if (!user) {
         throw new ApiError(404, "User not found")
@@ -390,15 +394,25 @@ const forgotPassword = asyncHandler(async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expiry = new Date(Date.now() + 10 * 60 * 1000)
 
-    user.otp = otp,
-        user.otpExpiry = expiry
+    user.otp = otp;
+    user.otpExpiry = expiry;
 
-    await user.save()
-    await sendOtpMail(email, otp);
+    await user.save(); // Save OTP to DB first
+
+    try {
+        await sendOtpMail(email, otp);
+    } catch (error) {
+        user.otp = null;
+        user.otpExpiry = null;
+        await user.save();
+        throw new ApiError(500, "Failed to send OTP email: " + error.message);
+    }
+
     return res
         .json(
             new ApiResponse(
                 200,
+                { email },
                 "Otp send Successfully"
             )
         )

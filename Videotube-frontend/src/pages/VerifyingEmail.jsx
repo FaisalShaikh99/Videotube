@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -9,7 +9,12 @@ const VerifyingEmail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const hasVerified = useRef(false);
+
   useEffect(() => {
+    if (hasVerified.current) return;
+    hasVerified.current = true;
+
     const verifyEmailAsync = async () => {
       try {
         await dispatch(verifyEmail(token)).unwrap();
@@ -24,7 +29,9 @@ const VerifyingEmail = () => {
       }
     };
 
-    verifyEmailAsync();
+    if (token) {
+      verifyEmailAsync();
+    }
   }, [token, navigate, dispatch]);
 
   return (

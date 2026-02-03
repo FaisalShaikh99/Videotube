@@ -6,7 +6,7 @@
 import apiClient from './axiosInstance'; // Pre-configured Axios instance
 
 export const apiCreatePlaylist = (videoId, data) => {
-  return apiClient.post(`/playlist/`, { ...data, videoId });
+  return apiClient.post(`/playlist/`, { ...data, videoId: videoId || null });
 };
 
 

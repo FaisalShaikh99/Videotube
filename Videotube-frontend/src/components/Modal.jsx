@@ -12,10 +12,10 @@ return (
       </div>
 
       {/* Modal Box */}
-      <div className="relative bg-white rounded-lg shadow-lg w-[400px] p-6 z-50">
+      <div className="relative bg-white dark:bg-slate-900 rounded-lg shadow-lg w-[400px] p-6 z-50">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 border-indigo-500 border-2 rounded hover:text-white font-semibold duration-200 hover:bg-indigo-600 px-2 py-1 text-gray-500"
+          className="absolute top-2 right-2 border-indigo-500 border-2 rounded hover:text-white dark:text-gray-300 dark:hover:text-white font-semibold duration-200 hover:bg-indigo-600 px-2 py-1 text-gray-500"
         >
           Close
         </button>

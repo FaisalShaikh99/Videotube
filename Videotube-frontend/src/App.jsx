@@ -29,6 +29,8 @@ import Playlist  from './pages/Playlists.jsx';
 import VerifyEmailInfo from './pages/VerifyEmailInfo.jsx';
 import { getCurrentUser, refreshAccessToken, setLoading } from './features/auth/authSlice.js';
 
+import PageLoader from './components/shared/Loaders/PageLoader.jsx';
+
 function App() {
 
   const dispatch = useDispatch();
@@ -58,7 +60,7 @@ function App() {
   }, [dispatch]);
 
   if (loading) {
-    return <div style={{ textAlign: "center", marginTop: "20%" }}>Loading...</div>;
+    return <PageLoader />;
   }
 
     return (

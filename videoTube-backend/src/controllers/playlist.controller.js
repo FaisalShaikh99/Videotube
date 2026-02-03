@@ -8,8 +8,8 @@ const createPlaylist = asyncHandler(async (req, res) => {
     const { name, description, videoId } = req.body
     const userId = req.user._id
 
-    if (!name?.trim() || !description?.trim()) {
-        throw new ApiError(400, "Name and description are required");
+    if (!name?.trim()) {
+        throw new ApiError(400, "Name is required");
     }
 
     const newPlaylist = await Playlist.create(
@@ -271,8 +271,8 @@ const updatePlaylist = asyncHandler(async (req, res) => {
     const { name, description } = req.body
     const userId = req.user?._id
 
-    if (!name?.trim() || !description?.trim()) {
-        throw new ApiError(400, "Name and description are required");
+    if (!name?.trim()) {
+        throw new ApiError(400, "Name is required");
     }
 
     const playlist = await Playlist.findById(playlistId)

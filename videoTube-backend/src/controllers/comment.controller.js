@@ -4,7 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
- 
+
 // Get Comments for a Video 
 const getVideoComment = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -13,6 +13,8 @@ const getVideoComment = asyncHandler(async (req, res) => {
   if (!videoId) {
     throw new ApiError(400, "Video ID is required");
   }
+
+  const currentUserId = req.user?._id || null; // Handle guest user
 
   const pipeline = [
     {
@@ -43,7 +45,7 @@ const getVideoComment = asyncHandler(async (req, res) => {
         likesCount: { $size: "$likes" },
         isLiked: {
           $cond: {
-            if: { $in: [req.user?._id, "$likes.likedBy"] },
+            if: { $in: [currentUserId, "$likes.likedBy"] },
             then: true,
             else: false
           }

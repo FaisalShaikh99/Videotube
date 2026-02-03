@@ -131,6 +131,12 @@ function VideoDetail() {
 
   // Handlers
   const handleLikeVideo = () => {
+    if (!loggedInUser) {
+      toast.info("Please login to like videos");
+      navigate("/login");
+      return;
+    }
+    
     if (!currentVideo?._id) return;
 
     dispatch(toggleVideoLike(currentVideo._id))
@@ -147,6 +153,12 @@ function VideoDetail() {
   };
 
   const handleSubscribe = () => {
+    if (!loggedInUser) {
+      toast.info("Please login to subscribe");
+      navigate("/login");
+      return;
+    }
+    
     if (!currentVideo?.owner?._id) return;
     
     dispatch(toggleSubscription(currentVideo.owner._id))
@@ -164,6 +176,12 @@ function VideoDetail() {
 
   // Comments
   const handleAddComment = () => {
+    if (!loggedInUser) {
+      toast.info("Please login to comment");
+      navigate("/login");
+      return;
+    }
+    
     if (!newComment.trim()) return;
 
     dispatch(addComment({ videoId: currentVideo._id, content: newComment }))
@@ -183,6 +201,11 @@ function VideoDetail() {
   };
 
   const handleLikeComment = (commentId) => {
+    if (!loggedInUser) {
+      toast.info("Please login to like comments");
+      navigate("/login");
+      return;
+    }
     dispatch(toggleCommentLike(commentId));
   }; 
   
@@ -215,7 +238,11 @@ function VideoDetail() {
   );
 
   const handleSaveClick = () => {
-      if (!loggedInUser) return toast.info("Please login to save videos");
+      if (!loggedInUser) {
+        toast.info("Please login to save videos");
+        navigate("/login");
+        return;
+      }
       if (isSaved) {
           setShowRemoveModal(true);
       } else {
@@ -279,6 +306,8 @@ function VideoDetail() {
                             size="sm"
                             onClick={handleSubscribe}
                             loading={subscriptionStatus === "loading"}
+                            disabled={!loggedInUser}
+                            title={!loggedInUser ? "Login to subscribe" : ""}
                             className="rounded-full px-6"
                          >
                             {currentVideo.owner?.isSubscribed ? "Subscribed" : "Subscribe"}
@@ -288,8 +317,11 @@ function VideoDetail() {
                       <div className="flex items-center bg-gray-100 dark:bg-slate-800 rounded-full p-1">
                           <button
                             onClick={handleLikeVideo}
+                            title={!loggedInUser ? "Login to like videos" : ""}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                                currentVideo.isLiked
+                                !loggedInUser
+                                ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                                : currentVideo.isLiked
                                 ? "bg-white dark:bg-slate-700 text-indigo-600 shadow-sm"
                                 : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-700"
                             }`}
@@ -301,9 +333,14 @@ function VideoDetail() {
 
                       <button 
                         onClick={handleSaveClick}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-full text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors"
+                        title={!loggedInUser ? "Login to save videos" : ""}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                          !loggedInUser
+                          ? "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                          : "bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
+                        }`}
                       >
-                         {isSaved ? <BookmarkCheck className="text-indigo-500" size={18} /> : <Bookmark size={18} />}
+                         {isSaved ? <BookmarkCheck className={!loggedInUser ? "text-gray-400" : "text-indigo-500"} size={18} /> : <Bookmark size={18} />}
                          <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
                       </button>
                       

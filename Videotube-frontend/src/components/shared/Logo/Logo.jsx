@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-function Logo({ 
+export default function Logo({ 
     size = 'md', 
     showText = true, 
     className = '',
@@ -57,7 +57,5 @@ function Logo({
     ) : (
         <LogoContent />
     );
-}
-
-export default Logo;
+};
 

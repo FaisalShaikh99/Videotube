@@ -61,7 +61,7 @@ function VideoCard({ video }) {
             <img
               src={thumbnail || "/thumbnail-placeholder.png"}
               alt={title}
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
               onError={(e) => (e.target.src = "/api/placeholder/400/225")}
             />
             {duration && (

@@ -111,7 +111,7 @@ function VerifyOtp() {
                 value={digit}
                 onChange={(e) => handleChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-12 h-12 text-center text-xl border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-12 h-12 text-center text-xl border rounded-md focus:ring-2 focus:ring-indigo-500 outline-none bg-white dark:bg-slate-800 dark:text-white dark:border-slate-700"
               />
             ))}
           </div>
@@ -119,7 +119,7 @@ function VerifyOtp() {
           {/* Timer & Resend */}
           <div className="text-center text-sm">
             {timer > 0 ? (
-              <span className="text-gray-500">
+              <span className="text-gray-500 dark:text-gray-400">
                 Resend OTP in <b>{timer}s</b>
               </span>
             ) : (

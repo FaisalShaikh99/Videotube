@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 import DeleteConfirmationModal from "../components/shared/DeleteConfirmationModal";
+import Button from "../components/shared/Button/Button";
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ function Dashboard() {
   const [playlistToDelete, setPlaylistToDelete] = useState(null);
   const [isDeletingVideo, setIsDeletingVideo] = useState(false);
   const [isDeletingPlaylist, setIsDeletingPlaylist] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     dispatch(getChannelStats());
@@ -68,23 +70,25 @@ function Dashboard() {
   };
 
   const handleSave = () => {
-  const form = new FormData();
-  form.append("title", formData.title);
-  form.append("description", formData.description);
-  form.append("duration", formData.duration);
+    setIsSaving(true);
+    const form = new FormData();
+    form.append("title", formData.title);
+    form.append("description", formData.description);
+    form.append("duration", formData.duration);
 
-  // Append files only if changed
-  if (formData.thumbnail instanceof File) form.append("thumbnail", formData.thumbnail);
-  if (formData.videoFile instanceof File) form.append("videoFile", formData.videoFile);
+    // Append files only if changed
+    if (formData.thumbnail instanceof File) form.append("thumbnail", formData.thumbnail);
+    if (formData.videoFile instanceof File) form.append("videoFile", formData.videoFile);
 
-  dispatch(updateVideo({ videoId: editingVideo._id, data: form }))
-    .unwrap()
-    .then(() => {
-      toast.success("Video updated successfully!");
-      setEditingVideo(null);
-      dispatch(getChannelVideos());
-    })
-    .catch((err) => toast.error(err || "Update failed!"));
+    dispatch(updateVideo({ videoId: editingVideo._id, data: form }))
+      .unwrap()
+      .then(() => {
+        toast.success("Video updated successfully!");
+        setEditingVideo(null);
+        dispatch(getChannelVideos());
+      })
+      .catch((err) => toast.error(err || "Update failed!"))
+      .finally(() => setIsSaving(false));
   };
 
   const confirmDeleteVideo = () => {
@@ -470,9 +474,9 @@ function Dashboard() {
         {/* ===== Edit Modal ===== */}
         {editingVideo && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-800">Edit Video Details</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-gray-100 dark:border-slate-800">
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Edit Video Details</h3>
                 <button 
                   onClick={() => setEditingVideo(null)}
                   className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -484,34 +488,34 @@ function Dashboard() {
               <div className="p-6 overflow-y-auto max-h-[70vh] space-y-5">
                 {/* Title */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Video Title</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Video Title</label>
                   <input
                     type="text"
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
                     placeholder="Enter video title"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
                 </div>
 
                 {/* Description */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Description</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                   <textarea
                     name="description"
                     rows="4"
                     value={formData.description}
                     onChange={handleChange}
                     placeholder="Tell viewers about your video"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
+                    className="w-full border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
                   />
                 </div>
 
                 {/* Thumbnail */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Thumbnail</label>
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 transition-colors hover:border-blue-300 hover:bg-blue-50/30">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Thumbnail</label>
+                  <div className="border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-xl p-4 transition-colors hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50/30 dark:hover:bg-slate-800/50">
                     <div className="flex flex-col gap-4">
                       {typeof formData.thumbnail === "string" && formData.thumbnail && (
                         <img
@@ -534,31 +538,33 @@ function Dashboard() {
 
                 {/* Duration */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Duration (seconds)</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration (seconds)</label>
                   <input
                     type="number"
                     name="duration"
                     value={formData.duration ?? editingVideo.duration ?? 0}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
-                <button
+              <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex justify-end gap-3">
+                <Button
+                  variant="ghost"
                   onClick={() => setEditingVideo(null)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                  disabled={isSaving}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="primary"
                   onClick={handleSave}
-                  className="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm shadow-blue-500/30 transition-all"
+                  loading={isSaving}
                 >
                   Save Changes
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -567,11 +573,11 @@ function Dashboard() {
         {/* ===== Playlist Edit Modal ===== */}
         {editingPlaylist && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                     <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-gray-100 dark:border-slate-800">
+                     <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-800">Edit Playlist</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">Update your playlist details</p>
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">Edit Playlist</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Update your playlist details</p>
                         </div>
                         <button onClick={() => setEditingPlaylist(null)} className="p-1.5 hover:bg-gray-100 rounded-full text-gray-500 hover:text-gray-700 transition-colors">
                             <X className="w-5 h-5" />
@@ -580,40 +586,41 @@ function Dashboard() {
                      
                      <div className="p-6 space-y-5">
                          <div>
-                             <label className="text-sm font-semibold text-gray-700 block mb-1.5">Playlist Name</label>
+                             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block mb-1.5">Playlist Name</label>
                              <input 
                                 type="text" 
                                 value={playlistFormData.name}
                                 onChange={(e) => setPlaylistFormData({...playlistFormData, name: e.target.value})}
                                 placeholder="e.g., My Favorite Songs"
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all placeholder:text-gray-400"
+                                className="w-full border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none transition-all placeholder:text-gray-400"
                              />
                          </div>
                          <div>
-                             <label className="text-sm font-semibold text-gray-700 block mb-1.5">Description <span className="text-gray-400 font-normal">(Optional)</span></label>
+                             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 block mb-1.5">Description <span className="text-gray-400 font-normal">(Optional)</span></label>
                              <textarea 
                                 rows="3"
                                 value={playlistFormData.description}
                                 onChange={(e) => setPlaylistFormData({...playlistFormData, description: e.target.value})}
                                 placeholder="What's this playlist about?"
-                                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none resize-none transition-all placeholder:text-gray-400"
+                                className="w-full border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none resize-none transition-all placeholder:text-gray-400"
                              />
                          </div>
                      </div>
 
-                     <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
-                        <button 
+                     <div className="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-100 dark:border-slate-800 flex justify-end gap-3">
+                        <Button 
+                            variant="ghost"
                             onClick={() => setEditingPlaylist(null)}
-                            className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-white hover:shadow-sm hover:border-gray-400 transition-all"
+                            disabled={isSaving}
                         >
                             Cancel
-                        </button>
-                        <button 
+                        </Button>
+                        <Button 
                              onClick={handlePlaylistSave}
-                             className="px-5 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 shadow-lg shadow-purple-600/20 hover:shadow-purple-600/30 transition-all"
+                             variant="primary"
                         >
                              Save Changes
-                        </button>
+                        </Button>
                      </div>
                 </div>
             </div>

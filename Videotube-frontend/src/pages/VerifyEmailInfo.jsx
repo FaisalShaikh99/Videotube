@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation, Link } from "react-router-dom";
-import Logo from "../components/Logo";
+import Logo from "../components/shared/Logo";
 
 const VerifyEmailInfo = () => {
   const [loading, setLoading] = useState(false);

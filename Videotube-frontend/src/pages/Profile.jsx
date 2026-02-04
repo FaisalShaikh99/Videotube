@@ -276,8 +276,9 @@ const ProfilePage = () => {
                 )}
               </Button>
               <Button 
+                variant="ghost"
                 onClick={handleCancel} 
-                className="mt-2 flex-1 bg-gray-600 hover:bg-gray-700"
+                className="mt-2 flex-1 bg-gray-200 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-slate-700 shadow-none border border-gray-300 dark:border-gray-700"
                 disabled={isSaving}
               >
                 Cancel

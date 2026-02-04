@@ -59,10 +59,10 @@ function VideoCard({ video }) {
         <Link to={`/video/${_id}`} className="block relative overflow-hidden aspect-video">
            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opactiy-0 group-hover:opacity-100 transition-opacity" />
             <img
-              src={thumbnail || "/thumbnail-placeholder.png"}
+              src={thumbnail || "/default-thumbnail.svg"}
               alt={title}
-              className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => (e.target.src = "/api/placeholder/400/225")}
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+              onError={(e) => (e.target.src = "/default-thumbnail.svg")}
             />
             {duration && (
               <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-md z-20">

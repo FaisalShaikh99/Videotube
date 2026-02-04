@@ -23,7 +23,7 @@ function About() {
             About VideoTube
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            A modern, full-stack video sharing platform built to learn, experiment, and showcase real-world web architecture.
+            VideoTube is a video streaming platform inspired by YouTube, built as a full-stack learning project.
           </p>
         </div>
 
@@ -142,7 +142,7 @@ function About() {
                 </p>
                 <div className="pt-4">
                     <p className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-purple-200">
-                        "VideoTube represents the journey from learning concepts to building robust, real-world applications."
+                        "This project is created for learning and portfolio purposes."
                     </p>
                 </div>
             </div>

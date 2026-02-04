@@ -11,14 +11,31 @@ import { FaHistory } from "react-icons/fa";
 import { BiSolidLike } from "react-icons/bi";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
+import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
+import { BiInfoCircle } from "react-icons/bi";
 import { useTheme } from "../../../context/ThemeContext";
-import { Sun, Moon, X } from "lucide-react"; 
+import { toast } from "react-toastify";
+import { Sun, Moon, X, UserCircle } from "lucide-react"; 
 
 function MobileMenu({ open, onClose, onLogout }) {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme(); // Use Theme
   const subscriberId = user?._id;
+
+  const handleGuestClick = (e, isProtected, path) => {
+    if (isProtected && !isAuthenticated) {
+      e.preventDefault();
+      onClose(); // Close menu
+      toast.info("Please login to access this feature", {
+        position: "bottom-left",
+        autoClose: 3000,
+        theme: "colored"
+      });
+    } else {
+        onClose();
+    }
+  };
 
   if (!open) return null;
 
@@ -72,17 +89,45 @@ function MobileMenu({ open, onClose, onLogout }) {
         {/* Navigation */}
         <nav className="p-3 space-y-1">
           <MenuItem to="/" icon={<ImHome />} label="Home" onClick={onClose} isActive={location.pathname === "/"} />
-          {isAuthenticated && (
+          
+          {isAuthenticated ? (
             <>
               <MenuItem to="/upload" icon={<RiVideoUploadFill />} label="Upload Video" onClick={onClose} isActive={location.pathname === "/upload"} />
               <MenuItem to={`/subscriptions/${user?._id}`} icon={<MdSubscriptions />} label="Subscriptions" onClick={onClose} isActive={location.pathname.includes("/subscriptions")} />
               <MenuItem to="/history" icon={<FaHistory />} label="History" onClick={onClose} isActive={location.pathname === "/history"} />
               <MenuItem to="/videos" icon={<BiSolidLike />} label="Liked Videos" onClick={onClose} isActive={location.pathname === "/videos"} />
               <MenuItem to={`/playlists/${user?._id}`} icon={<RiPlayList2Line/>} label="Playlists" onClick={onClose} isActive={location.pathname.includes("/playlists")} /> 
-              {/* <MenuItem to="/watch-later" icon={<MdWatchLater />} label="Watch Later" onClick={onClose} isActive={location.pathname === "/watch-later"} /> */}
               <MenuItem to="/dashboard" icon={<MdSpaceDashboard />} label="Dashboard" onClick={onClose} isActive={location.pathname === "/dashboard"} />
             </>
+          ) : (
+            <>
+               {/* Guest Mobile Items */}
+               <MenuItem 
+                 to="/subscriptions-guest" 
+                 icon={<MdSubscriptions />} 
+                 label="Subscriptions" 
+                 onClick={(e) => handleGuestClick(e, true)} 
+                 isActive={false} 
+               />
+               <MenuItem 
+                 to="/you-guest" 
+                 icon={<UserCircle size={20} />} 
+                 label="You" 
+                 onClick={(e) => handleGuestClick(e, true)} 
+                 isActive={false} 
+               />
+               <MenuItem 
+                 to="/history-guest" 
+                 icon={<FaHistory />} 
+                 label="History" 
+                 onClick={(e) => handleGuestClick(e, true)} 
+                 isActive={false} 
+               />
+            </>
           )}
+
+          {/* Common Items */}
+          <MenuItem to="/about" icon={<BiInfoCircle />} label="About" onClick={onClose} isActive={location.pathname === "/about"} />
         </nav>
 
         {/* Logout */}

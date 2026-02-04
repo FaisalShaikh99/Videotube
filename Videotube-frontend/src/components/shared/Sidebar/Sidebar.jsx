@@ -37,7 +37,6 @@ function Sidebar() {
     { path: "/subscriptions-guest", icon: <MdSubscriptions />, label: "Subscriptions", isProtected: true },
     { path: "/you-guest", icon: <FaUserCircle />, label: "You", isProtected: true },
     { path: "/history-guest", icon: <FaHistory />, label: "History", isProtected: true },
-    { path: "/about", icon: <BiInfoCircle />, label: "About" },
   ];
 
   const userNavItems = [
@@ -49,6 +48,11 @@ function Sidebar() {
   const creatorNavItems = [
     { path: "/upload", icon: <RiVideoUploadFill />, label: "Upload Video" },
     { path: "/dashboard", icon: <MdSpaceDashboard />, label: "Dashboard" },
+  ];
+
+  /* ===================== SHARED ITEMS (Always Visible) ===================== */
+  const commonNavItems = [
+    { path: "/about", icon: <BiInfoCircle />, label: "About" },
   ];
 
   const shouldShowItem = (item) =>
@@ -111,18 +115,32 @@ function Sidebar() {
             ))
           ) : (
             /* GUEST USER - Guest Items */
-            guestNavItems.map((item) => (
-              <Link
-                key={item.label}
-                to={item.path}
-                onClick={(e) => handleGuestClick(e, item)}
-                className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
-                title={!isSidebarOpen ? item.label : ""}
-              >
-                <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
-                {isSidebarOpen && <span>{item.label}</span>}
-              </Link>
-            ))
+            <>
+              {guestNavItems.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.path}
+                  onClick={(e) => handleGuestClick(e, item)}
+                  className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
+                  title={!isSidebarOpen ? item.label : ""}
+                >
+                  <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
+                  {isSidebarOpen && <span>{item.label}</span>}
+                </Link>
+              ))}
+              {/* Common Items for Guest */}
+              {commonNavItems.map((item) => (
+                 <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
+                  title={!isSidebarOpen ? item.label : ""}
+                 >
+                   <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
+                   {isSidebarOpen && <span>{item.label}</span>}
+                 </Link>
+              ))}
+            </>
           )}
         </nav>
 
@@ -165,6 +183,22 @@ function Sidebar() {
                   </Link>
                 ))}
               </nav>
+            </div>
+
+            {/* ===== COMMON (Visible to Logged In) ===== */}
+            <div className="pt-6 border-t border-gray-100 dark:border-gray-800 mt-6">
+                <nav className="space-y-1">
+                    {commonNavItems.map((item) => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={getLinkClasses(item.path)}
+                        >
+                            <span className="mr-4 text-xl">{item.icon}</span>
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
             </div>
 
             {/* ===== PROFILE ===== */}

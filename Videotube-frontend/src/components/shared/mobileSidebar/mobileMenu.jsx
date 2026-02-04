@@ -11,7 +11,7 @@ import { FaHistory } from "react-icons/fa";
 import { BiSolidLike } from "react-icons/bi";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
 import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
-import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
+
 import { BiInfoCircle } from "react-icons/bi";
 import { useTheme } from "../../../context/ThemeContext";
 import { toast } from "react-toastify";

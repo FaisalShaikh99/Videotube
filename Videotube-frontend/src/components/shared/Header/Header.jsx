@@ -37,9 +37,15 @@ function Header() {
 
   const debounceRef = useRef(null);
   const searchInputRef = useRef(null);
+  const isSelectionRef = useRef(false);
 
   /* ================= SEARCH ================= */
   useEffect(() => {
+    if (isSelectionRef.current) {
+        isSelectionRef.current = false;
+        return;
+    }
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (!searchText || searchText.trim().length < 2) {
@@ -171,6 +177,7 @@ function Header() {
                           key={i}
                           onMouseDown={(e) => {
                               e.preventDefault(); 
+                              isSelectionRef.current = true;
                               setSearchText(s);
                               if (window.location.pathname !== '/') {
                                   navigate(`/?query=${encodeURIComponent(s)}`);
@@ -311,6 +318,7 @@ function Header() {
                           <div
                             key={i}
                             onClick={() => {
+                                isSelectionRef.current = true;
                                 setSearchText(s);
                                 if (window.location.pathname !== '/') {
                                     navigate(`/?query=${encodeURIComponent(s)}`);

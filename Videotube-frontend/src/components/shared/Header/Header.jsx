@@ -136,9 +136,8 @@ function Header() {
             </div>
           </div>
 
-          {/* MIDDLE SECTION: SEARCH (Restored) */}
-          {isAuthenticated && (
-            <div className="hidden md:flex flex-1 justify-center px-6 max-w-2xl mx-auto">
+          {/* MIDDLE SECTION: SEARCH (Visible to ALL) */}
+          <div className="hidden md:flex flex-1 justify-center px-6 max-w-2xl mx-auto">
                <form onSubmit={handleSearch} className="relative w-full group">
                   <div className="relative flex items-center">
                       <FiSearch className="absolute left-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors z-10" size={20} />
@@ -190,7 +189,6 @@ function Header() {
                   )}
                </form>
             </div>
-          )}
 
           {/* RIGHT SECTION: ACTIONS */}
           <div className="flex items-center gap-2 sm:gap-4">
@@ -238,18 +236,19 @@ function Header() {
 
              {/* Mobile Actions: Search First, then Gradient Plus */}
              <div className="flex md:hidden items-center gap-2">
-                {isAuthenticated && (
+                 {/* Search Icon - Visible to ALL */}
+                 <button onClick={() => setIsMobileSearchOpen(true)} className="p-2 text-gray-600 dark:text-gray-300">
+                    <FiSearch size={22} />
+                 </button>
+
+                 {isAuthenticated && (
                    <>
-                     <button onClick={() => setIsMobileSearchOpen(true)} className="p-2 text-gray-600 dark:text-gray-300">
-                        <FiSearch size={22} />
-                     </button>
-                     
                      {/* Gradient Upload Button */}
                      <Link to="/upload" className="p-2 rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500 text-white shadow-md shadow-indigo-500/20">
                         <FaPlus size={18} />
                      </Link>
                    </>
-                )}
+                 )}
                 {!isAuthenticated && (
                     <Link to="/login">
                         <Button variant="primary" size="sm" className="px-4 py-1.5 h-auto text-xs">Login</Button>

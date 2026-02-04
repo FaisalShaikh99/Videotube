@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { formatViewCount, formatDuration } from "../../../utils/formatViewCount";
 import { formatDate } from "../../../utils/formatDate";
@@ -41,7 +42,7 @@ function VideoCard({ video }) {
     e.stopPropagation();
     
     if (!currentUser) {
-      alert("Please login to save videos"); 
+      toast.info("Sign in to save this video.");
       return;
     }
 

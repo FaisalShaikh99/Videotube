@@ -4,9 +4,10 @@ import Avatar from "../Avatar/Avatar";
 
 import { ImHome } from "react-icons/im";
 import { MdSubscriptions, MdSpaceDashboard, MdWatchLater } from "react-icons/md";
-import { FaHistory } from "react-icons/fa";
-import { BiSolidLike } from "react-icons/bi";
+import { FaHistory, FaUserCircle } from "react-icons/fa";
+import { BiSolidLike, BiInfoCircle } from "react-icons/bi";
 import { RiPlayList2Line, RiVideoUploadFill } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 function Sidebar() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -29,7 +30,14 @@ function Sidebar() {
       label: "Subscriptions",
       requiresAuth: true,
     },
+  ];
 
+  const guestNavItems = [
+    { path: "/", icon: <ImHome />, label: "Home" },
+    { path: "/subscriptions-guest", icon: <MdSubscriptions />, label: "Subscriptions", isProtected: true },
+    { path: "/you-guest", icon: <FaUserCircle />, label: "You", isProtected: true },
+    { path: "/history-guest", icon: <FaHistory />, label: "History", isProtected: true },
+    { path: "/about", icon: <BiInfoCircle />, label: "About" },
   ];
 
   const userNavItems = [
@@ -60,8 +68,18 @@ function Sidebar() {
       return `${base} bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500 text-white shadow-lg shadow-indigo-500/25 scale-105`;
     }
     
-    // Inactive hover state
     return `${base} text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400`;
+  };
+
+  const handleGuestClick = (e, item) => {
+    if (item.isProtected) {
+      e.preventDefault();
+      toast.info("Please sign in to access this feature", {
+        position: "bottom-left",
+        autoClose: 3000,
+        theme: "colored"
+      });
+    }
   };
 
   /* ===================== RENDER ===================== */
@@ -76,20 +94,36 @@ function Sidebar() {
       <div className="p-4 space-y-6">
 
         {/* ========== MAIN / MINI MENU (Always Visible) ========== */}
+        {/* ========== MAIN MENU ========== */}
         <nav className="space-y-2">
-          {mainNavItems.filter(shouldShowItem).map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
-              title={!isSidebarOpen ? item.label : ""}
-            >
-              <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
-              {isSidebarOpen && (
-                <span>{item.label}</span>
-              )}
-            </Link>
-          ))}
+          {isAuthenticated ? (
+            /* LOGGED IN USER - Main Items */
+            mainNavItems.filter(shouldShowItem).map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
+                title={!isSidebarOpen ? item.label : ""}
+              >
+                <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
+                {isSidebarOpen && <span>{item.label}</span>}
+              </Link>
+            ))
+          ) : (
+            /* GUEST USER - Guest Items */
+            guestNavItems.map((item) => (
+              <Link
+                key={item.label}
+                to={item.path}
+                onClick={(e) => handleGuestClick(e, item)}
+                className={`${getLinkClasses(item.path)} ${!isSidebarOpen ? 'justify-center px-0' : ''}`}
+                title={!isSidebarOpen ? item.label : ""}
+              >
+                <span className={`text-xl ${!isSidebarOpen ? "mb-0" : "mr-4"}`}>{item.icon}</span>
+                {isSidebarOpen && <span>{item.label}</span>}
+              </Link>
+            ))
+          )}
         </nav>
 
         {/* ========== FULL MENU (Only when OPEN) ========== */}

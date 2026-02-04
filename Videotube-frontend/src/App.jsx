@@ -27,6 +27,7 @@ import VerifyingEmail from './pages/VerifyingEmail.jsx';
 import Playlist  from './pages/Playlists.jsx';
 // import PlaylistDetail from './pages/PlaylistDetails.jsx'
 import VerifyEmailInfo from './pages/VerifyEmailInfo.jsx';
+import About from './pages/About.jsx';
 import { getCurrentUser, refreshAccessToken, setLoading } from './features/auth/authSlice.js';
 
 import PageLoader from './components/shared/Loaders/PageLoader.jsx';
@@ -74,6 +75,7 @@ function App() {
                         <Route path='/' element={<Home />} />
                         <Route path="video/:videoId" element={<VideoDetail />} />
                         <Route path="channel/:username" element={<Channel />} />
+                        <Route path="about" element={<About />} />
 
                         {/* Protected Routes */}
                         <Route element={<ProtectedRoute />}>

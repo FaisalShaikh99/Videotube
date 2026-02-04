@@ -132,8 +132,10 @@ function VideoDetail() {
   // Handlers
   const handleLikeVideo = () => {
     if (!loggedInUser) {
-      toast.info("Please login to like videos");
-      navigate("/login");
+      toast.info("Like this video? Sign in to make your opinion count.");
+      // navigate("/login"); // Optional based on request "Toastify OR modal... Show login prompt" - sticking to toast as requested, maybe removing nav if user wants to stay? "Show YouTube-style login prompt... Toastify OR modal". Usually YouTube prompts and might redirect if you click 'Sign In' button in prompt. Here simple toast is enough or toast then redirect. User instruction says: "Toastify OR modal: “Like this video? Sign in to make your opinion count.”" AND "On click behavior: - Do NOT perform the action - Show YouTube-style login prompt".
+      // I will add a slight delay or just show toast. Note: user requests "Guest vs logged-in UX explanation" so I should be consistent.
+      // Strict rule: "Do NOT perform the action".
       return;
     }
     
@@ -154,8 +156,8 @@ function VideoDetail() {
 
   const handleSubscribe = () => {
     if (!loggedInUser) {
-      toast.info("Please login to subscribe");
-      navigate("/login");
+      toast.info("Sign in to subscribe to this channel.");
+      // navigate("/login");
       return;
     }
     
@@ -177,7 +179,7 @@ function VideoDetail() {
   // Comments
   const handleAddComment = () => {
     if (!loggedInUser) {
-      toast.info("Please login to comment");
+      toast.info("Sign in to add a comment");
       navigate("/login");
       return;
     }
@@ -239,8 +241,8 @@ function VideoDetail() {
 
   const handleSaveClick = () => {
       if (!loggedInUser) {
-        toast.info("Please login to save videos");
-        navigate("/login");
+        toast.info("Sign in to save this video.");
+        // navigate("/login");
         return;
       }
       if (isSaved) {
@@ -306,8 +308,7 @@ function VideoDetail() {
                             size="sm"
                             onClick={handleSubscribe}
                             loading={subscriptionStatus === "loading"}
-                            disabled={!loggedInUser}
-                            title={!loggedInUser ? "Login to subscribe" : ""}
+                            title={!loggedInUser ? "Sign in to subscribe" : ""}
                             className="rounded-full px-6"
                          >
                             {currentVideo.owner?.isSubscribed ? "Subscribed" : "Subscribe"}
@@ -317,10 +318,10 @@ function VideoDetail() {
                       <div className="flex items-center bg-gray-100 dark:bg-slate-800 rounded-full p-1">
                           <button
                             onClick={handleLikeVideo}
-                            title={!loggedInUser ? "Login to like videos" : ""}
+                            title={!loggedInUser ? "Sign in to like" : ""}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                                 !loggedInUser
-                                ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                                ? "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-700"
                                 : currentVideo.isLiked
                                 ? "bg-white dark:bg-slate-700 text-indigo-600 shadow-sm"
                                 : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-700"
@@ -333,14 +334,14 @@ function VideoDetail() {
 
                       <button 
                         onClick={handleSaveClick}
-                        title={!loggedInUser ? "Login to save videos" : ""}
+                        title={!loggedInUser ? "Sign in to save" : ""}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                           !loggedInUser
-                          ? "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                          ? "bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
                           : "bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
                         }`}
                       >
-                         {isSaved ? <BookmarkCheck className={!loggedInUser ? "text-gray-400" : "text-indigo-500"} size={18} /> : <Bookmark size={18} />}
+                         {isSaved ? <BookmarkCheck className={!loggedInUser ? "text-gray-700 dark:text-gray-200" : "text-indigo-500"} size={18} /> : <Bookmark size={18} />}
                          <span className="hidden sm:inline">{isSaved ? "Saved" : "Save"}</span>
                       </button>
                       
@@ -374,17 +375,22 @@ function VideoDetail() {
             </h2>
 
             {/* Add Comment */}
-            {loggedInUser && (
               <div className="flex gap-4">
-                <Avatar src={loggedInUser.avatar} size="md" />
+                <Avatar src={loggedInUser?.avatar} size="md" fallback="?" />
                 <div className="flex-1 space-y-2">
                   <textarea
                     className="w-full p-3 bg-transparent border-b border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-500 focus:ring-0 transition-colors text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm resize-none"
                     placeholder="Add a comment..."
                     rows="1"
                     value={newComment}
+                    onClick={() => {
+                        if (!loggedInUser) toast.info("Sign in to add a comment");
+                    }}
                     onChange={(e) => setNewComment(e.target.value)}
-                    onFocus={(e) => e.target.rows = 3}
+                    onFocus={(e) => {
+                        if(!loggedInUser) e.target.blur();
+                        else e.target.rows = 3
+                    }}
                     onBlur={(e) => !newComment && (e.target.rows = 1)}
                   />
                   <div className="flex justify-end gap-2">
@@ -400,7 +406,7 @@ function VideoDetail() {
                   </div>
                 </div>
               </div>
-            )}
+
 
             {/* Comments List */}
             <div className="space-y-6">

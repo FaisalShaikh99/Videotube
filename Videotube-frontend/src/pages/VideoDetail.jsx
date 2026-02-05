@@ -132,10 +132,7 @@ function VideoDetail() {
   // Handlers
   const handleLikeVideo = () => {
     if (!loggedInUser) {
-      toast.info("Like this video? Sign in to make your opinion count.");
-      // navigate("/login"); // Optional based on request "Toastify OR modal... Show login prompt" - sticking to toast as requested, maybe removing nav if user wants to stay? "Show YouTube-style login prompt... Toastify OR modal". Usually YouTube prompts and might redirect if you click 'Sign In' button in prompt. Here simple toast is enough or toast then redirect. User instruction says: "Toastify OR modal: “Like this video? Sign in to make your opinion count.”" AND "On click behavior: - Do NOT perform the action - Show YouTube-style login prompt".
-      // I will add a slight delay or just show toast. Note: user requests "Guest vs logged-in UX explanation" so I should be consistent.
-      // Strict rule: "Do NOT perform the action".
+      toast.info("Please login to interact with videos");
       return;
     }
     
@@ -156,8 +153,7 @@ function VideoDetail() {
 
   const handleSubscribe = () => {
     if (!loggedInUser) {
-      toast.info("Sign in to subscribe to this channel.");
-      // navigate("/login");
+      toast.info("Please login to interact with videos");
       return;
     }
     
@@ -179,8 +175,7 @@ function VideoDetail() {
   // Comments
   const handleAddComment = () => {
     if (!loggedInUser) {
-      toast.info("Sign in to add a comment");
-      navigate("/login");
+      toast.info("Please login to interact with videos");
       return;
     }
     
@@ -204,8 +199,7 @@ function VideoDetail() {
 
   const handleLikeComment = (commentId) => {
     if (!loggedInUser) {
-      toast.info("Please login to like comments");
-      navigate("/login");
+      toast.info("Please login to interact with videos");
       return;
     }
     dispatch(toggleCommentLike(commentId));
@@ -241,8 +235,7 @@ function VideoDetail() {
 
   const handleSaveClick = () => {
       if (!loggedInUser) {
-        toast.info("Sign in to save this video.");
-        // navigate("/login");
+        toast.info("Please login to interact with videos");
         return;
       }
       if (isSaved) {
@@ -255,6 +248,10 @@ function VideoDetail() {
   const isOwner = loggedInUser?._id === currentVideo?.owner?._id;
 
   const handleShare = () => {
+    if (!loggedInUser) {
+      toast.info("Please login to interact with videos");
+      return;
+    }
     navigator.clipboard.writeText(window.location.href);
     toast.success("Link copied to clipboard!");
   };
@@ -384,7 +381,7 @@ function VideoDetail() {
                     rows="1"
                     value={newComment}
                     onClick={() => {
-                        if (!loggedInUser) toast.info("Sign in to add a comment");
+                        if (!loggedInUser) toast.info("Please login to interact with videos");
                     }}
                     onChange={(e) => setNewComment(e.target.value)}
                     onFocus={(e) => {

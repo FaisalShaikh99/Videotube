@@ -35,8 +35,8 @@ function Sidebar() {
   const guestNavItems = [
     { path: "/", icon: <ImHome />, label: "Home" },
     { path: "/subscriptions-guest", icon: <MdSubscriptions />, label: "Subscriptions", isProtected: true },
-    { path: "/you-guest", icon: <FaUserCircle />, label: "You", isProtected: true },
     { path: "/history-guest", icon: <FaHistory />, label: "History", isProtected: true },
+    { path: "/you-guest", icon: <FaUserCircle />, label: "You", isProtected: true },
   ];
 
   const userNavItems = [
@@ -78,7 +78,7 @@ function Sidebar() {
   const handleGuestClick = (e, item) => {
     if (item.isProtected) {
       e.preventDefault();
-      toast.info("Please sign in to access this feature", {
+      toast.info("Please login to access this feature", {
         position: "bottom-left",
         autoClose: 3000,
         theme: "colored"

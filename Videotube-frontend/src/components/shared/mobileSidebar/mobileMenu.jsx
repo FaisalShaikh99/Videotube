@@ -110,16 +110,16 @@ function MobileMenu({ open, onClose, onLogout }) {
                  isActive={false} 
                />
                <MenuItem 
-                 to="/you-guest" 
-                 icon={<UserCircle size={20} />} 
-                 label="You" 
+                 to="/history-guest" 
+                 icon={<FaHistory />} 
+                 label="History" 
                  onClick={(e) => handleGuestClick(e, true)} 
                  isActive={false} 
                />
                <MenuItem 
-                 to="/history-guest" 
-                 icon={<FaHistory />} 
-                 label="History" 
+                 to="/you-guest" 
+                 icon={<UserCircle size={20} />} 
+                 label="You" 
                  onClick={(e) => handleGuestClick(e, true)} 
                  isActive={false} 
                />

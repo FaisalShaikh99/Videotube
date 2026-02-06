@@ -14,13 +14,10 @@ const uploadOnCloudinary = async (localFilePath, resourceType = "auto") => {
 
     let response;
     if (resourceType === 'video') {
-      // Use upload_large for better handling of video files
-      // response = await cloudinary.uploader.upload_large(localFilePath, {
-
-      // Standard upload works better for small files properly returning URLs immediately
-      response = await cloudinary.uploader.upload(localFilePath, {
+      // Use upload_large for better handling of video files < 100MB+
+      response = await cloudinary.uploader.upload_large(localFilePath, {
         resource_type: "video",
-        // chunk_size: 6000000, 
+        chunk_size: 6000000,
       });
     } else {
       response = await cloudinary.uploader.upload(localFilePath, {

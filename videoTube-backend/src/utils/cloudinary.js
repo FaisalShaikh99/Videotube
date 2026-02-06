@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs/promises";   // 👈 IMPORTANT
+import fs from "fs/promises";  
 
 const uploadOnCloudinary = async (localFilePath, resourceType = "auto") => {
   cloudinary.config({
@@ -33,7 +33,7 @@ const uploadOnCloudinary = async (localFilePath, resourceType = "auto") => {
 
     console.log(`✅ Upload successful: ${response.url || response.secure_url}`);
 
-    // ✅ SAFE async cleanup
+    // SAFE async cleanup
     await fs.unlink(localFilePath).catch(() => { });
 
     return response;

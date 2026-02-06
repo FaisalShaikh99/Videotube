@@ -166,9 +166,13 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Video and thumbnail upload failed");
   }
 
+  // Debug logs
+  console.log("Cloudinary Video Response:", JSON.stringify(video, null, 2));
+  console.log("Cloudinary Thumbnail Response:", JSON.stringify(thumbnail, null, 2));
+
   // Safe URL extraction with fallback
-  const videoUrl = video.secure_url || video.url;
-  const thumbnailUrl = thumbnail.secure_url || thumbnail.url;
+  const videoUrl = video?.secure_url || video?.url;
+  const thumbnailUrl = thumbnail?.secure_url || thumbnail?.url;
 
   if (!videoUrl || !thumbnailUrl) {
     throw new ApiError(500, "Cloudinary upload succeeded but returned no info URL");

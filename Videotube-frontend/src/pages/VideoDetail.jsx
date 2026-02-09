@@ -75,6 +75,7 @@ function VideoDetail() {
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
 
   // Fetch Video + Likes + Comments
   useEffect(() => {
@@ -354,15 +355,29 @@ function VideoDetail() {
           </div>
 
           {/* Description Box */}
-          <div className="bg-gray-100 dark:bg-slate-800/50 rounded-xl p-4 text-sm text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-              <div className="font-bold mb-2 flex gap-2 text-gray-900 dark:text-gray-100">
+          <div 
+             onClick={() => setIsDescExpanded(prev => !prev)}
+             className={`bg-gray-50 dark:bg-slate-900/40 rounded-xl p-3 text-sm text-gray-700 dark:text-gray-300 ${!isDescExpanded ? 'hover:bg-gray-100 dark:hover:bg-slate-900/60' : ''} transition-colors cursor-pointer group`}
+          >
+              <div className="font-semibold mb-2 flex gap-2 text-gray-900 dark:text-gray-100 text-xs">
                  <span>{currentVideo.views || 0} views</span>
                  <span>•</span>
                  <span>{currentVideo.createdAt ? new Date(currentVideo.createdAt).toLocaleDateString() : "Unknown Date"}</span>
               </div>
-              <p className="whitespace-pre-wrap leading-relaxed">
-                 {currentVideo.description || "No description available."}
-              </p>
+              
+              <div className="relative">
+                  <p className={`whitespace-pre-wrap leading-relaxed text-gray-800 dark:text-gray-300 ${!isDescExpanded ? 'line-clamp-2' : ''}`}>
+                     {currentVideo.description || "No description available."}
+                  </p>
+              </div>
+
+              {currentVideo.description?.length > 100 && (
+                  <button 
+                    className="mt-1 font-bold text-gray-900 dark:text-white text-xs hover:underline bg-transparent border-0 p-0"
+                  >
+                    {isDescExpanded ? "Show less" : "...more"}
+                  </button>
+              )}
           </div>
 
           {/* Comments Section */}

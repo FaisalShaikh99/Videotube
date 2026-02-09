@@ -4,6 +4,7 @@ import { API_BASE_URL } from "../config/apiConfig.js";
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+  timeout: 1200000, // 20 minutes timeout for large uploads
 });
 
 /**

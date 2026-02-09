@@ -24,32 +24,35 @@ dotenv.config({
 // Pehle database se connect karenge, phir server start karenge
 
 connectDB()
-.then(() => {
-    // ========== DATABASE CONNECTION SUCCESS ==========
-    // Database successfully connect ho gaya hai
-    console.log("✅ Database connected successfully!")
-                                                          
-    // ========== SERVER START ==========
-    // Express app ko listen karaya (server start kar diya)
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(`🚀 Server is running at port : ${process.env.PORT || 8000}`) 
-        console.log(`🌐 Server URL: http://localhost:${process.env.PORT || 8000}`)
-    })
+    .then(() => {
+        // ========== DATABASE CONNECTION SUCCESS ==========
+        // Database successfully connect ho gaya hai
+        console.log("✅ Database connected successfully!")
 
-    // ========== ERROR HANDLING ==========
-    // Agar app mein koi error aata hai (like server crash, port busy, etc.)
-    app.on("error", (error) => {
-        console.error("❌ Server Error: ", error)
-        throw error
-    })
+        // ========== SERVER START ==========
+        // Express app ko listen karaya (server start kar diya)
+        const server = app.listen(process.env.PORT || 8000, () => {
+            console.log(`🚀 Server is running at port : ${process.env.PORT || 8000}`)
+            console.log(`🌐 Server URL: http://localhost:${process.env.PORT || 8000}`)
+        })
 
-})
-.catch((error) => {
-    // ========== DATABASE CONNECTION FAILED ==========
-    // Agar DB connection fail ho jaye to ye chalega
-    console.log("❌ MongoDB connection failed !!!", error);  
-    process.exit(1) // Server ko terminate kar do
-})
+        // Increase timeout to 60 minutes for large file uploads on slow connections
+        server.timeout = 3600000; // 1 hour
+
+        // ========== ERROR HANDLING ==========
+        // Agar app mein koi error aata hai (like server crash, port busy, etc.)
+        app.on("error", (error) => {
+            console.error("❌ Server Error: ", error)
+            throw error
+        })
+
+    })
+    .catch((error) => {
+        // ========== DATABASE CONNECTION FAILED ==========
+        // Agar DB connection fail ho jaye to ye chalega
+        console.log("❌ MongoDB connection failed !!!", error);
+        process.exit(1) // Server ko terminate kar do
+    })
 
 // OLD APPROACH (COMMENTED OUT)
 // Pehle ye approach use karte the, ab modular approach use kar rahe hain

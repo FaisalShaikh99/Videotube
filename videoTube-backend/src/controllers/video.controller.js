@@ -159,16 +159,21 @@ const publishAVideo = asyncHandler(async (req, res) => {
   // upload to cloudinary
   console.log("🚀 Publishing Video: Starting Uploads...");
 
-  const video = await uploadOnCloudinary(videoLocalPath, "video");
-  const thumbnail = await uploadOnCloudinary(thumbnailLocalPath, "image");
+  // upload to cloudinary in parallel
+  console.log("🚀 Publishing Video: Starting Uploads...");
+
+  const [video, thumbnail] = await Promise.all([
+    uploadOnCloudinary(videoLocalPath, "video"),
+    uploadOnCloudinary(thumbnailLocalPath, "image")
+  ]);
 
   if (!video || !thumbnail) {
     throw new ApiError(400, "Video and thumbnail upload failed");
   }
 
-  // Debug logs
-  console.log("Cloudinary Video Response:", JSON.stringify(video, null, 2));
-  console.log("Cloudinary Thumbnail Response:", JSON.stringify(thumbnail, null, 2));
+  // Debug logs (Safe)
+  console.log("Cloudinary Video Response Type:", typeof video, Array.isArray(video) ? "Array" : "Object");
+  if (thumbnail) console.log("Cloudinary Thumbnail URL:", thumbnail.secure_url);
 
   // Safe URL extraction with fallback
   const videoUrl = video?.secure_url || video?.url;

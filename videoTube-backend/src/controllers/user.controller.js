@@ -1,9 +1,7 @@
 // USER CONTROLLER - Business Logic Handler
 
 import { asyncHandler } from "../utils/asyncHandler.js"; // Error handling wrapper
-import { ApiError } from "../utils/ApiError.js"           // Custom error class
-import { User } from "../models/user.model.js"            // User model for database operations
-import { uploadOnCloudinary } from "../utils/cloudinary.js"  // File upload utility
+import { ApiError } from "../utils/ApiError.js"           // Custom error clas
 import { ApiResponse } from "../utils/ApiResponse.js";  // Standardized response format
 import jwt from "jsonwebtoken";                         // JWT token operations
 import mongoose from "mongoose";
@@ -12,6 +10,7 @@ import { OAuth2Client } from "google-auth-library";
 import { verifyMail } from "../emailVerify/verifyMail.js";
 import { Session } from "../models/session.Model.js";
 import { sendOtpMail } from "../emailVerify/sendOtp.js";
+import { User } from "../models/user.modal.js";
 
 // ========== USER REGISTRATION ==========
 const registerUser = asyncHandler(async (req, res) => {

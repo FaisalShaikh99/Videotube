@@ -1,6 +1,6 @@
 // middlewares/optionalVerifyJWT.js
 import jwt from "jsonwebtoken";
-import {User} from "../models/user.model.js" 
+import { User } from "../models/user.modal.js";
   
 export const optionalVerifyJWT = async (req, _, next) => {
   try {
